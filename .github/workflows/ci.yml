@@ -26,4 +26,4 @@ jobs:
       - name: Run prek
         uses: j178/prek-action@6ad80277337ad479fe43bd70701c3f7f8aa74db3 # v2.0.3
         with:
-          extra-args: --all-files --show-diff-on-failure
+          extra-args: --all-files
