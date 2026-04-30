@@ -1,0 +1,57 @@
+---
+name: Pre-commit autoupdate
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  autoupdate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.14"
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit autoupdate
+        run: pre-commit autoupdate
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet .pre-commit-config.yaml; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run pre-commit with updated hooks
+        if: steps.diff.outputs.changed == 'true'
+        run: pre-commit run --all-files --show-diff-on-failure || true
+
+      - name: Create pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          branch: chore/pre-commit-autoupdate
+          title: "chore(deps): pre-commit autoupdate"
+          body: |
+            Automated pre-commit hook version updates via `pre-commit autoupdate`.
+
+            The full pre-commit suite ran against these changes during this workflow.
+            Review the workflow log for any failures before merging.
+          commit-message: "chore(deps): pre-commit autoupdate"
+          labels: dependencies

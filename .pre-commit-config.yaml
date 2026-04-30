@@ -86,6 +86,12 @@ repos:
       - id: shfmt
         args: ["-i", "2", "-ci", "-bn"]
 
+  # ── GitHub Actions related hooks ──────────────────────────────────────
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+
   # ── PowerShell related hooks ──────────────────────────────────────────
   - repo: local
     hooks:
