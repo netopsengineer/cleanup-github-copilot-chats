@@ -1,0 +1,32 @@
+{
+  "version": "0.2",
+  "ignorePaths": [],
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
+  "words": [
+    "apdisk",
+    "donotpresent",
+    "ehthumbs",
+    "encryptable",
+    "esktop",
+    "fseventsd",
+    "ionide",
+    "justfile",
+    "LOCALAPPDATA",
+    "msix",
+    "OPTOUT",
+    "prek",
+    "psmoduleanalysiscache",
+    "pssa",
+    "psscriptanalyzer",
+    "shellcheck",
+    "shfmt",
+    "stackdump",
+    "Taskfile",
+    "timemachine",
+    "USERPROFILE",
+    "venv"
+  ],
+  "ignoreWords": [],
+  "import": []
+}

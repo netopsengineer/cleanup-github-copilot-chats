@@ -1,0 +1,25 @@
+# Ignore everything by default.
+**
+
+# Keep analyzer entrypoint (COPY'd into the image).
+!psscriptanalyzer.ps1
+
+# Always exclude Git and local/editor noise.
+.git
+.gitignore
+.github
+.vscode
+.idea
+.DS_Store
+*.swp
+*.swo
+
+# Exclude runtime/build artifacts.
+tmp
+temp
+.cache
+coverage
+dist
+build
+bin
+obj

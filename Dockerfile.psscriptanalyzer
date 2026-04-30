@@ -1,0 +1,32 @@
+# syntax=docker/dockerfile:1
+
+FROM mcr.microsoft.com/powershell:7.5-ubuntu-24.04
+
+LABEL org.opencontainers.image.title="psscriptanalyzer-lint"
+LABEL org.opencontainers.image.description="PowerShell lint container using PowerShell 7.5 and latest PSScriptAnalyzer from PSGallery"
+
+ENV POWERSHELL_TELEMETRY_OPTOUT=1 \
+    DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    PSModuleAnalysisCachePath=/tmp/psmoduleanalysiscache/ModuleAnalysisCache
+
+SHELL ["pwsh", "-NoLogo", "-NoProfile", "-NonInteractive", "-Command"]
+
+RUN $minimumVersion = [version]'7.4.6'; \
+    $actualVersion = $PSVersionTable.PSVersion; \
+    if ($actualVersion -lt $minimumVersion) { \
+        throw \"PowerShell $actualVersion is too old. PSScriptAnalyzer requires PowerShell $minimumVersion or newer.\"; \
+    }; \
+    Set-PSResourceRepository -Name PSGallery -Trusted; \
+    Install-PSResource -Name PSScriptAnalyzer -Repository PSGallery -Scope AllUsers -TrustRepository -AcceptLicense -Reinstall; \
+    Import-Module PSScriptAnalyzer -Force; \
+    $module = Get-Module PSScriptAnalyzer -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1; \
+    Write-Host \"PowerShell version: $($PSVersionTable.PSVersion)\"; \
+    Write-Host \"PSScriptAnalyzer version: $($module.Version)\"; \
+    Write-Host \"PSScriptAnalyzer path: $($module.ModuleBase)\"
+
+WORKDIR /workspace
+
+COPY psscriptanalyzer.ps1 /usr/local/bin/psscriptanalyzer.ps1
+
+ENTRYPOINT ["pwsh", "-NoLogo", "-NoProfile", "-NonInteractive", "-File", "/usr/local/bin/psscriptanalyzer.ps1"]
+CMD ["/workspace"]

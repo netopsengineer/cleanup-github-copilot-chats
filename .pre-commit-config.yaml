@@ -1,0 +1,115 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/pre-commit-config.json
+
+# For pre-commit, install hooks: `pre-commit install`
+
+# Using prek instead of pre-commit? Install hooks: `prek install -f`
+
+# Set the project's default language versions for hooks that require a specific language version.
+default_language_version:
+  python: python3.13
+
+# Whether to stop running hooks after a first failure
+fail_fast: false
+
+# exclude: Exclude files from being checked
+# use pipes to exclude multiple files or directories
+exclude: |
+  (?x)^(
+    .venv/.*|
+    .vscode/.*|
+    .gitignore|
+    .dockerignore|
+    Taskfile.yml|
+    justfile|
+  )$
+
+repos:
+  # ── General file hygiene ──────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+      - id: pretty-format-json
+        args: ["--autofix", "--no-sort-keys"]
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+        args: ["--unsafe"]
+      - id: check-ast
+
+  # Useful if you have hooks with `additional_dependencies` that need to be kept up to date.
+  - repo: https://github.com/pre-commit/sync-pre-commit-deps
+    rev: v0.0.3
+    hooks:
+      - id: sync-pre-commit-deps
+
+  # ── Prose related hooks ───────────────────────────────────────────────
+
+  # requires cspell.json at the root of the repository
+  - repo: https://github.com/streetsidesoftware/cspell-cli
+    rev: v10.0.0
+    hooks:
+      - id: cspell
+        args: ["--config", "cspell.json"]
+
+  # requires npx which is available with nodejs
+  - repo: local
+    hooks:
+      - id: markdown-table-formatter
+        name: markdown-table-formatter
+        language: system
+        entry: npx -y markdown-table-formatter
+        types: [markdown]
+
+  # requires .markdownlint-cli2.jsonc at the root of the repository
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.22.1
+    hooks:
+      - id: markdownlint-cli2
+        args: ["--config", ".markdownlint-cli2.jsonc", "--fix"]
+        require_serial: true
+
+  # ── Shell related hooks ───────────────────────────────────────────────
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.13.1-1
+    hooks:
+      - id: shfmt
+        args: ["-i", "2", "-ci", "-bn"]
+
+  # ── PowerShell related hooks ──────────────────────────────────────────
+  - repo: local
+    hooks:
+      - id: make-lifecycle
+        name: make lifecycle
+        entry: make lifecycle
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages:
+          - pre-commit
+
+      - id: make-full-lifecycle
+        name: make full-lifecycle
+        entry: make full-lifecycle
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages:
+          - manual
+
+  # ── Security related hooks ────────────────────────────────────────────
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+        # args: ["--config", ".gitleaks.toml"]  # Optional: specify a custom configuration file with exclusions
