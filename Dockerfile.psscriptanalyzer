@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 
-FROM mcr.microsoft.com/powershell:7.5-ubuntu-24.04
+FROM mcr.microsoft.com/dotnet/sdk:9.0
 
 LABEL org.opencontainers.image.title="psscriptanalyzer-lint"
-LABEL org.opencontainers.image.description="PowerShell lint container using PowerShell 7.5 and latest PSScriptAnalyzer from PSGallery"
+LABEL org.opencontainers.image.description="PowerShell lint container using the .NET 9 SDK image with PSScriptAnalyzer from PSGallery"
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1 \
     DOTNET_CLI_TELEMETRY_OPTOUT=1 \
@@ -16,7 +16,6 @@ RUN $minimumVersion = [version]'7.4.6'; \
     if ($actualVersion -lt $minimumVersion) { \
         throw \"PowerShell $actualVersion is too old. PSScriptAnalyzer requires PowerShell $minimumVersion or newer.\"; \
     }; \
-    Set-PSResourceRepository -Name PSGallery -Trusted; \
     Install-PSResource -Name PSScriptAnalyzer -Repository PSGallery -Scope AllUsers -TrustRepository -AcceptLicense -Reinstall; \
     Import-Module PSScriptAnalyzer -Force; \
     $module = Get-Module PSScriptAnalyzer -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1; \

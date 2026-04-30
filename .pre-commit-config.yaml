@@ -7,7 +7,7 @@
 
 # Set the project's default language versions for hooks that require a specific language version.
 default_language_version:
-  python: python3.13
+  python: python3.14
 
 # Whether to stop running hooks after a first failure
 fail_fast: false

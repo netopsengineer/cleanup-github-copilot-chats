@@ -8,7 +8,7 @@ The repository also includes a Docker-based PowerShell lint environment so the W
 |--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Platform** | ![macOS](https://img.shields.io/badge/macOS-supported-brightgreen?logo=apple&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-supported-brightgreen?logo=windows&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-not_supported-lightgrey?logo=linux&logoColor=black)         |
 | **Runtime**  | ![VS Code](https://img.shields.io/badge/VS_Code-Stable_%26_Insiders-007ACC?logo=visualstudiocode&logoColor=white) ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE?logo=powershell&logoColor=white) ![Bash](https://img.shields.io/badge/Bash-5.x-4EAA25?logo=gnubash&logoColor=white) |
-| **Lint**     | ![PSScriptAnalyzer](https://img.shields.io/badge/PSScriptAnalyzer-passing-brightgreen?logo=powershell&logoColor=white) ![Docker](https://img.shields.io/badge/lint-Docker_%2B_PowerShell_7.5-2496ED?logo=docker&logoColor=white)                                                                          |
+| **Lint**     | ![PSScriptAnalyzer](https://img.shields.io/badge/PSScriptAnalyzer-passing-brightgreen?logo=powershell&logoColor=white) ![Docker](https://img.shields.io/badge/lint-Docker_%2B_.NET_SDK_9.0-2496ED?logo=docker&logoColor=white)                                                                            |
 
 ## Purpose
 
@@ -254,7 +254,7 @@ This repository includes a Docker-based PSScriptAnalyzer environment. It lets ma
 
 The Docker image uses:
 
-- PowerShell 7.5 on Ubuntu 24.04
+- .NET 9 SDK image with PowerShell and latest PSScriptAnalyzer from PSGallery
 - Latest available `PSScriptAnalyzer` from PSGallery at image build time
 - Repository-mounted lint execution
 
@@ -474,7 +474,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Build lint image
         run: docker build --pull -f Dockerfile.psscriptanalyzer -t pssa-lint:latest .
@@ -499,7 +499,7 @@ Rebuild the image without cache:
 make rebuild
 ```
 
-The Dockerfile pins the base image to PowerShell 7.5 on Ubuntu 24.04 to avoid old `latest` image drift.
+The Dockerfile uses the .NET 9 SDK image, which includes PowerShell.
 
 ### Docker still appears to use an old image
 
