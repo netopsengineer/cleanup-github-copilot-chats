@@ -18,16 +18,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          python-version: "3.14"
+          node-version: "22"
 
-      - name: Install pre-commit
-        run: pip install pre-commit
+      - name: Install prek
+        uses: j178/prek-action@6ad80277337ad479fe43bd70701c3f7f8aa74db3 # v2.0.3
+        with:
+          mode: install
 
-      - name: Run pre-commit autoupdate
-        run: pre-commit autoupdate
+      - name: Run prek autoupdate
+        run: prek auto-update
 
       - name: Check for changes
         id: diff
@@ -38,9 +40,9 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Run pre-commit with updated hooks
+      - name: Run prek with updated hooks
         if: steps.diff.outputs.changed == 'true'
-        run: pre-commit run --all-files --show-diff-on-failure || true
+        run: prek run --all-files --show-diff-on-failure || true
 
       - name: Create pull request
         if: steps.diff.outputs.changed == 'true'
@@ -49,9 +51,9 @@ jobs:
           branch: chore/pre-commit-autoupdate
           title: "chore(deps): pre-commit autoupdate"
           body: |
-            Automated pre-commit hook version updates via `pre-commit autoupdate`.
+            Automated pre-commit hook version updates via `prek auto-update`.
 
-            The full pre-commit suite ran against these changes during this workflow.
+            The full hook suite ran against these changes during this workflow.
             Review the workflow log for any failures before merging.
           commit-message: "chore(deps): pre-commit autoupdate"
           labels: dependencies
