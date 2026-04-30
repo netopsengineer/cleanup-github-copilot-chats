@@ -3,7 +3,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0
 
 LABEL org.opencontainers.image.title="psscriptanalyzer-lint"
-LABEL org.opencontainers.image.description="PowerShell lint container using the .NET 9 SDK image with PSScriptAnalyzer from PSGallery"
+LABEL org.opencontainers.image.description="PowerShell lint container using the .NET 10 SDK image with PSScriptAnalyzer from PSGallery"
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1 \
     DOTNET_CLI_TELEMETRY_OPTOUT=1 \

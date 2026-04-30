@@ -41,4 +41,4 @@ Both scripts share the same behavioral contract:
 
 Analyzer rules are configured in `PSScriptAnalyzerSettings.psd1`. Three rules are excluded (`PSAvoidUsingWriteHost`, `PSUseSingularNouns`, `PSUseApprovedVerbs`) — see that file for rationale. Do not add them back without updating the rationale comments.
 
-The Docker image uses the .NET 9 SDK base image, which includes PowerShell. If PSScriptAnalyzer complains about a minimum PowerShell version, run `make rebuild` to pull a fresh base image.
+The Docker image uses the .NET 10 SDK base image, which includes PowerShell. If PSScriptAnalyzer complains about a minimum PowerShell version, run `make rebuild` to pull a fresh base image.
