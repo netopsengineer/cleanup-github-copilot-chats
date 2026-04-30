@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0
+FROM mcr.microsoft.com/dotnet/sdk:10.0
 
 LABEL org.opencontainers.image.title="psscriptanalyzer-lint"
 LABEL org.opencontainers.image.description="PowerShell lint container using the .NET 9 SDK image with PSScriptAnalyzer from PSGallery"
