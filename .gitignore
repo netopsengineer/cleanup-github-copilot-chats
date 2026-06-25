@@ -50,3 +50,6 @@ $RECYCLE.BIN/
 .history
 .ionide
 *.vsix
+
+### Node.js tooling ###
+node_modules/

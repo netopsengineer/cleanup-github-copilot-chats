@@ -49,30 +49,28 @@ repos:
       - id: sync-pre-commit-deps
 
   # ── Prose related hooks ───────────────────────────────────────────────
-
   # requires cspell.json at the root of the repository
-  - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v10.0.1
-    hooks:
-      - id: cspell
-        args: ["--config", "cspell.json"]
-
-  # requires npx which is available with nodejs
   - repo: local
     hooks:
+      - id: cspell
+        name: cspell
+        language: system
+        entry: npx --no-install cspell
+        args: ["--config", "cspell.json"]
+
       - id: markdown-table-formatter
         name: markdown-table-formatter
         language: system
-        entry: npx -y markdown-table-formatter
+        entry: npx --no-install markdown-table-formatter
         types: [markdown]
 
-  # requires .markdownlint-cli2.jsonc at the root of the repository
-  - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.22.1
-    hooks:
       - id: markdownlint-cli2
+        name: markdownlint-cli2
+        language: system
+        entry: npx --no-install markdownlint-cli2
         args: ["--config", ".markdownlint-cli2.jsonc", "--fix"]
         require_serial: true
+        types: [markdown]
 
   # ── Shell related hooks ───────────────────────────────────────────────
   - repo: https://github.com/shellcheck-py/shellcheck-py

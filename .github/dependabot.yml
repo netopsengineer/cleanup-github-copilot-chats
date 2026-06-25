@@ -5,19 +5,71 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: daily
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - "*"
     labels:
       - dependencies
+      - github-actions
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "ci"
 
   - package-ecosystem: docker
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: daily
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    groups:
+      docker:
+        patterns:
+          - "*"
     labels:
       - dependencies
+      - docker
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore"
+
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    groups:
+      pre-commit:
+        patterns:
+          - "*"
+    labels:
+      - dependencies
+      - pre-commit
+    commit-message:
+      prefix: "chore"
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
+    versioning-strategy: increase
+    groups:
+      npm-tooling:
+        patterns:
+          - "*"
+    labels:
+      - dependencies
+      - npm
+    commit-message:
+      prefix: "chore"
