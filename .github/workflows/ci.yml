@@ -6,13 +6,22 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 8 * * 1"
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
+    name: lint
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -21,9 +30,71 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: "22"
+          node-version: "lts/*"
+          cache: npm
+
+      - name: Install npm tooling
+        run: npm ci
 
       - name: Run prek
         uses: j178/prek-action@bdca6f102f98e2b4c7029491a53dfd366469e33d # v2.0.4
         with:
           extra-args: --all-files
+
+  report-scheduled-failure:
+    name: report scheduled failure
+    if: ${{ always() && github.event_name == 'schedule' }}
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE_LABEL: ci-scheduled
+      ISSUE_TITLE: Scheduled CI failure detected
+      LINT_RESULT: ${{ needs.lint.result }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    steps:
+      - name: Report scheduled CI status
+        run: |
+          set -euo pipefail
+          triggered_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+
+          issue_number="$(
+            gh issue list \
+              --state open \
+              --label "$ISSUE_LABEL" \
+              --search "$ISSUE_TITLE in:title" \
+              --json number,title \
+              --jq '.[] | select(.title == "Scheduled CI failure detected") | .number' \
+            | head -n 1
+          )"
+
+          body_file="$(mktemp)"
+          {
+            echo "Scheduled CI failed."
+            echo
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| Workflow | ${GITHUB_WORKFLOW} |"
+            echo "| Run number | ${GITHUB_RUN_NUMBER} |"
+            echo "| Commit SHA | ${GITHUB_SHA} |"
+            echo "| Run URL | ${RUN_URL} |"
+            echo "| Trigger time | ${triggered_at} |"
+            echo "| Job result | ${LINT_RESULT} |"
+          } > "$body_file"
+
+          if [ "$LINT_RESULT" != "success" ]; then
+            if [ -n "$issue_number" ]; then
+              gh issue edit "$issue_number" --body-file "$body_file" --add-label "$ISSUE_LABEL"
+              gh issue comment "$issue_number" --body "Scheduled CI is still failing: ${RUN_URL}"
+            else
+              gh issue create --title "$ISSUE_TITLE" --label "$ISSUE_LABEL" --body-file "$body_file"
+            fi
+          elif [ -n "$issue_number" ]; then
+            gh issue comment "$issue_number" --body "Scheduled CI recovered: ${RUN_URL}"
+            gh issue close "$issue_number" --comment "Closing after successful scheduled CI run: ${RUN_URL}"
+          fi

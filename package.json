@@ -1,0 +1,12 @@
+{
+  "name": "cleanup-github-copilot-chats",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Repository maintenance tooling for cleanup-github-copilot-chats.",
+  "license": "MIT",
+  "devDependencies": {
+    "cspell": "10.0.1",
+    "markdown-table-formatter": "1.7.0",
+    "markdownlint-cli2": "0.22.1"
+  }
+}
