@@ -52,6 +52,7 @@ jobs:
       issues: write
     env:
       GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
       ISSUE_LABEL: ci-scheduled
       ISSUE_TITLE: Scheduled CI failure detected
       LINT_RESULT: ${{ needs.lint.result }}
