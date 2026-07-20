@@ -43,7 +43,7 @@ jobs:
 
   report-scheduled-failure:
     name: report scheduled failure
-    if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
+    if: ${{ always() && github.event_name == 'schedule' }}
     needs: lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
