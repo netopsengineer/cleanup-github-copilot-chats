@@ -7,6 +7,6 @@
   "devDependencies": {
     "cspell": "10.0.1",
     "markdown-table-formatter": "1.7.0",
-    "markdownlint-cli2": "0.23.0"
+    "markdownlint-cli2": "0.23.1"
   }
 }
