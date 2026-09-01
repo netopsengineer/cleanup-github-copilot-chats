@@ -5,7 +5,7 @@
   "description": "Repository maintenance tooling for cleanup-github-copilot-chats.",
   "license": "MIT",
   "devDependencies": {
-    "cspell": "10.1.0",
+    "cspell": "10.1.1",
     "markdown-table-formatter": "1.7.0",
     "markdownlint-cli2": "0.23.2"
   }
