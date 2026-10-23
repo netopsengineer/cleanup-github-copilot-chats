@@ -34,7 +34,13 @@ jobs:
           cache: npm
 
       - name: Install npm tooling
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      - name: Audit locked dependencies (all severities)
+        run: npm run audit
+
+      - name: Test patched Markdown tooling compatibility
+        run: npm run test:security-tooling
 
       - name: Run prek
         uses: j178/prek-action@1382ad72dea72f9d53832f2bcb65b3e87a947204 # v3.0.1
