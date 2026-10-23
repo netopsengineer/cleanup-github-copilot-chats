@@ -7,6 +7,13 @@
   "devDependencies": {
     "cspell": "10.4.0",
     "markdown-table-formatter": "1.7.0",
-    "markdownlint-cli2": "0.23.3"
+    "markdownlint-cli2": "0.24.0"
+  },
+  "overrides": {
+    "katex": "0.18.2"
+  },
+  "scripts": {
+    "audit": "npm audit --audit-level=low",
+    "test:security-tooling": "node scripts/test-security-tooling.mjs"
   }
 }
